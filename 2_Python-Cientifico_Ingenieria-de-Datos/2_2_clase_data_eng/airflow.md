@@ -16,7 +16,7 @@ Creado por AirBnB, publicado como Open Source y transferido a la Apache Software
 - DAGs: Directed Acyclic Graph. Es una colección de todas las tareas que quieres correr, organizada en una forma de percebir sus relaciones y dependencias.
 - Scope: Ámbito de ejecución (similar al de Python). Airflow cargará cualquier objeto `DAG` de los DAGfiles que encuentre a su paso. Pero solo entrará en contexto el `DAG` que sea global.
 - Default Arguments: Diccionario de `default_args` que se pasa a un DAG y aplicará en cualquiera de los operadores. Esto permite aplicar parámetros comunes a muchos operadores sin escribirlos de manera repetitiva.
-- Context Manager: DAGs que asignan nuevos operadores al mismo DAG u otro. Algo así como la herencia en OOP.
+- Context Manager: DAGs que asignan nuevos operadores al mismo DAG u otro. Algo así como la herencia en OOP. Introducido en la versión 1.8
 - Operators: La descripción de las tareas. Mientras que los DAGs describen como correr un Workflow, los `Operators` determinan que se hace.
 Hay distintos tipos de operadores:
   - `BashOperator` - executes a bash command
@@ -103,9 +103,29 @@ Y revisamos en la Web UI que ha funcionado: Browse -> Task Instances.
 
 ## 2. Workflows
 
+Crearemos un worflow especificando accciones en forma de DAG en Python.
+Las tareas de un Workflow/Pipeline hacen un grafo, el grafo es dirigido por que las tareas están ordenadas en secuencia; y no queremos atascarnos en un loop infinito, por eso el grafo tiene que ser acíclico.
+
+Así se ve un DAG de ejemplo:
+
+![Example DAG](https://airflow.incubator.apache.org/_images/subdag_before.png)
+
+El primer DAG que crearemos es más sencillo. Consistirá en las siguientes tareas:
+
+* Imprimir un mensaje (print `'hello'`)
+* Esperar cinco segundos
+* Imprimir otro mensaje (print `'hello'`)
+* Y tendrá un plan de ejecución diario.
+
 
 ### DAG File
+Vamos nuestro folder de Airflow y encontraremos el subfolder `dags/`.
+Crearemos un archivo de python para contener nuestro DAG. El archivo será: `airflow_cerouno.py`.
 
+Primero vamos a configurar todas las propiedades que son compartidas por nuestras tareas.
+Recordemos que podemos definir parámetros por defecto en un diccionario.
+
+Agregamos el siguiente bloque a `airflow_cerouno.py` para especificar propietario, tiempo de inicio e intentos de ejecución como configuraciones compartidas en las tareas.
 
 ### Default Arguments
 
@@ -113,15 +133,18 @@ Y revisamos en la Web UI que ha funcionado: Browse -> Task Instances.
 import datetime as dt
 
 default_args = {
-    'owner': 'me',
+    'owner': 'Ricky Rick',
     'start_date': dt.datetime(2018, 5, 1),
     'retries': 1,
     'retry_delay': dt.timedelta(minutes=5),
 }
 ```
-
+Estas configuraciones le indican a Airflow que este Workflow el dueño es `'Ricky Rick'`, que es un worflow válido desde el 1ro de mayo de 2018, y está permitido volver a intentar su ejecución una vez en caso de fallar (con una espera de cinco minutos).
 
 ### Creación del DAG
+
+Ahora creamos un objeto DAG para nuestras tareas:
+
 
 ```python
 from airflow import DAG
@@ -131,8 +154,23 @@ with DAG('airflow_tutorial_v01',
          schedule_interval='0 * * * *',
          ) as dag:
 ```
+Con `schedule_interval='0 0 * * *'` especificamos una ejecución cada hora 0; el DAG correrá cada día a las 00:00.
+Para decifrar la expresión del Cron Schedule, consulta [crontab.guru](https://crontab.guru/#0_*_*_*_*). Cron también permite expresiones como `'@daily'` y `'@hourly'`
 
+#### Notas sobre nuestro DAG:
 
+* Estamos usando [context manager](https://jeffknupp.com/blog/2016/03/07/python-with-context-managers/) para crear el DAG. Todas las tareas deben especificarse como parte de este DAG, o se tendrá que indicar e instanciar de forma manual.
+
+* Airflow generará las ejecuciones desde `start_date` correspondientes a  `schedule_interval`.
+Una vez que el DAG está activo, Airflow verifica que se tenga el cumplimiento desde `start_date`. Cualquier ejecución faltante se programará de forma automática.
+**¿Qué pasará si inicializamos el 2017-05-13 un DAG con `start_date` de 2017-05-01 y un `schedule_interval` diario?**
+
+* Una ejecución inicia **después** de que estaba asignado en la siguiente forma:
+El worflow diario para 2017-06-02 corre después de 2016-06-02 23:59 y el worflow a cada hora para 2017-07-03 01:00 inicia después de 2016-07-03 01:59.
+  * El momento en que el workflow inició se llama `execution_date`.
+* Desde el punto de vista en ETL funciona así: solo puedes procesar los datos diarios el día después de lo ocurrido.
+
+* Airflow guarda en su DB todas las fechas asignadas para un DAG registrado, por lo tanto se sugiere no cambiar los parámetros  `start_date` y `schedule_interval` de un DAG.
 ### Creación de tareas
 
 
@@ -167,6 +205,31 @@ with DAG('airflow_tutorial_v01',
                          bash_command='sleep 5')
     print_world = PythonOperator(task_id='print_world',
                                  python_callable=print_world)
+```
+
+
+### Testing
+
+First check that DAG file contains valid Python code by executing the file with Python:
+
+```{bash}
+$ python airflow_tutorial.py
+```
+
+You can manually test a single task for a given `execution_date` with `airflow test`:
+
+```{bash}
+$ airflow test airflow_tutorial_v01 print_world 2017-07-01
+```
+
+This runs the task locally as if it was for 2017-07-01, ignoring other tasks and without communicating to the database.
+
+
+### Activate the DAG
+
+
+```bash
+$ airflow scheduler
 ```
 ## 3. Ejercicios
 ## 4. Recursos
