@@ -84,7 +84,7 @@ $ airflow webserver --port 8080
 Y se debe ver algo similar a esto:
 ![](https://airflow.incubator.apache.org/_images/dags.png)
 
-Con el servidor web corriendo, abrimos una nueva terminal de comandos, nos situamos en el folder de Airfow y volvemos a activar el virtualenv:
+Con el servidor web corriendo, abrimos una nueva terminal de comandos, nos situamos en el folder de Airflow y volvemos a activar el virtualenv:
 
 ```{bash}
 $ source activate airflow-cerouno
@@ -149,7 +149,7 @@ Ahora creamos un objeto DAG para nuestras tareas:
 ```python
 from airflow import DAG
 
-with DAG('airflow_tutorial_v01',
+with DAG('airflow_cerouno_v01',
          default_args=default_args,
          schedule_interval='0 * * * *',
          ) as dag:
@@ -171,12 +171,31 @@ El worflow diario para 2017-06-02 corre después de 2016-06-02 23:59 y el worflo
 * Desde el punto de vista en ETL funciona así: solo puedes procesar los datos diarios el día después de lo ocurrido.
 
 * Airflow guarda en su DB todas las fechas asignadas para un DAG registrado, por lo tanto se sugiere no cambiar los parámetros  `start_date` y `schedule_interval` de un DAG.
+Es mejor versionar nuestro DAG (por ejemplo  `airflow_cerouno_v02`) y evitar problemas de scheduling o tareas con la web UI/CLI.
+
+* Timezone: UTC
+
+
 ### Creación de tareas
 
+Las tareas se representan por operadores que realizan una acción, transfieren datos o evaluan si algo ha sido hecho.
+Algunos ejemplos son: ejecutar un script de Bash o llamar a una función de Python, transferir  tablas entre DBs, o copiar archivos entre servidores. Y los sensores revisan  si un archivo existe o los datos fueron agregados a una DB.
+
+Nuestro workflow será de tres tareas:
+- Mostrar la cadena 'hello'
+- Esperar cinco segundos
+- Imprimir 'world'.
+
+Los primeros dos con el operador `BashOperator` y el tercero con `PythonOperator`.
+
+Cada operador tiene un ID único de tarea y algo por hacer:
 
 ```python
     from airflow.operators.bash_operator import BashOperator
     from airflow.operators.python_operator import PythonOperator
+
+
+
 
     def print_world():
         print('world')
@@ -188,16 +207,42 @@ El worflow diario para 2017-06-02 corre después de 2016-06-02 23:59 y el worflo
     print_world = PythonOperator(task_id='print_world',
                                  python_callable=print_world)
 ```
+**¿Qué notamos en `bash_command` y `python_callable`?**
 
 
-
-
+Las dependencias entre tareas pueden ser ascendentes y descendentes (upstream vs downstream). Las encadenamos de forma que `sleep` correrá después de `print_hello` y seguirá `print_world`; `print_hello` -> `sleep` -> `print_world`:
 ```python
-    from airflow.operators.bash_operator import BashOperator
-    from airflow.operators.python_operator import PythonOperator
+print_hello >> sleep >> print_world
+```
+Esto es usando [Bitshift Composition](https://airflow.apache.org/concepts.html#bitshift-composition), similar a [bitwise operators de Python](https://wiki.python.org/moin/BitwiseOperators).
 
-    def print_world():
-        print('world')
+
+
+Una vez que acomodamos el código del DAG, se verá similar a este:
+```python
+import datetime as dt
+
+from airflow import DAG
+from airflow.operators.bash_operator import BashOperator
+from airflow.operators.python_operator import PythonOperator
+
+
+def print_world():
+    print('world')
+
+
+default_args = {
+    'owner': 'me',
+    'start_date': dt.datetime(2018, 5, 1),
+    'retries': 1,
+    'retry_delay': dt.timedelta(minutes=5),
+}
+
+
+with DAG('airflow_cerouno_v01',
+         default_args=default_args,
+         schedule_interval='0 * * * *',
+         ) as dag:
 
     print_hello = BashOperator(task_id='print_hello',
                                bash_command='echo "hello"')
@@ -205,33 +250,58 @@ El worflow diario para 2017-06-02 corre después de 2016-06-02 23:59 y el worflo
                          bash_command='sleep 5')
     print_world = PythonOperator(task_id='print_world',
                                  python_callable=print_world)
+
+
+print_hello >> sleep >> print_world
 ```
 
 
 ### Testing
 
-First check that DAG file contains valid Python code by executing the file with Python:
-
+Revisamos que el DAGfile contiene código válido de Python:
 ```{bash}
 $ python airflow_tutorial.py
 ```
 
-You can manually test a single task for a given `execution_date` with `airflow test`:
+Podemos probar una tarea con una fecha supuesta  (parámetro  `execution_date` y usando el comando `airflow test`:
 
-```{bash}
-$ airflow test airflow_tutorial_v01 print_world 2017-07-01
+```bash
+$ airflow test airflow_cerouno_v01 print_world 2018-01-01
 ```
 
-This runs the task locally as if it was for 2017-07-01, ignoring other tasks and without communicating to the database.
+Esto corre de manera local como si fuera 2018-01-01, ignorando otras tareas y sin comunicarse con la DB.
 
+### Graduación en la escuela del ETL: Activando nuestro DAG
 
-### Activate the DAG
+Ya sabes como funciona tu DAG para Airflow, es hora de ejecutarlo de modo automático!
+Para hacerlo, necesitamos tener el servicio de Scheduler encendido.
+**¿Para qué funciona este servicio?**
+Se encarga de monitorear todas las tareas y todos los DAGs, cuando una tarea se ha cumplido acciona las nuevas instancias de tarea que están marcadas como dependencia.
 
+Al igual que iniamos el servidor web para la UI, lo haremos para el Scheduler. Abrimos una nueva terminal de comandos, activamos el virtualenv y nos dirigimos al directorio de Airflow (por defecto en ~/airflow). Y si usamos la variable AIRFLOW_HOME, la volvemos a activar.
+
+Ejecutamos:
 
 ```bash
 $ airflow scheduler
 ```
+
+Listo. Esperamos un instante y nuestro DAG está en la UI. En la lista, junto al nombre del DAG (`airflow_cerouno_v01`) tenemos un switch de encendido/apagado.
+
+Encendemos nuestro DAG y esperamos que el Scheduler propague los cambios para correr nuestro DAG.
+
+### Tips
+
+* La ejecución continua de un DAG debe dar siempre el mismo resultado
+* Es preferible usar la notación propia de Cron para `schedule_interval` en vz de  `@daily` y `@hourly`
 ## 3. Ejercicios
+
+Ahora conocemos lo básico de Airflow, creación de DAGs y su puesta en marcha. Te toca:
+
+* Cambiar el intervalo a cada 30 minutos
+* Usar un sensor para añadir un retraso de 5 minutos antes de iniciar las tareas
+* [Consultar la documentación de Templating](https://airflow.incubator.apache.org/tutorial.html#templating-with-jinja) e implementarlo con `BashOperator`. Mostrar en pantalla  `execution_date` en vez de `hello`
+* [Implementar templating](https://airflow.incubator.apache.org/code.html#airflow.operators.PythonOperator) para `PythonOperator`: Imprimir en pantalla `execution_date` en la función `print_world()`
 ## 4. Recursos
 * [Airflow documentation](https://airflow.apache.org/index.html)
 * [ETL best practices with Airflow](https://gtoonstra.github.io/etl-with-airflow/)
