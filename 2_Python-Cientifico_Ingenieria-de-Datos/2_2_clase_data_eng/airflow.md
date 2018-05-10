@@ -41,15 +41,133 @@ La forma más sencilla de instalar la plataforma es usando  `pip`: `pip install 
 
 Para la clase de hoy, usaremos el ambiente virtual definido en el archivo `environment.yml` de Conda.
 
+* Creando el ambiente virtual:
 ```bash
 $ conda env create -f environment.yml
 ```
-
+* Activación
 ```bash
 $ source activate airflow-cerouno
 ```
+De igual manera, nos podemos hacer cargo de las dependencias e instalar Airflow así:
+```bash
+$ pip install apache-airflow
+```
+### Instanciando Airflow
+
+Antes de usar Airflow, tenemos que inicializar su base de datos.
+Esta DB almacena información acerca de los Workflows y sus datos históricos, conexiones a fuentes de datos externas, usuarios, etc.
+Una vez que la DB está configurada, podemos usar la UI de Airflow para administrar los pipelines.
+
+La DB default, es SQLite, que funciona bien para esta clase.
+En un ambiente de producción, lo ideal sería usar una DB como PostgreSQL.
+
+
+**AIRFLOW_HOME**
+Airflow usa la variable de ambiente `AIRFLOW_HOME` para elegir el directorio donde almacena sus configuraciones y DB. De no definirse, usará `~/airflow/`.
+**Para hoy, si usamos la ubicación por default, está bien.**
+
+* Si queremos cambiar el valor, elegimos el folder deseado y ejecutamos:
+```bash
+$ export AIRFLOW_HOME="$(pwd)"
+```
+* Para crear la DB:
+```bash
+$ airflow initdb
+```
+
+Después iniciamos el servidor web y vamos a [localhost:8080](http://localhost:8080/) para ver la UI:
+```bash
+$ airflow webserver --port 8080
+```
+
+Y se debe ver algo similar a esto:
+![](https://airflow.incubator.apache.org/_images/dags.png)
+
+Con el servidor web corriendo, abrimos una nueva terminal de comandos, nos situamos en el folder de Airfow y volvemos a activar el virtualenv:
+
+```{bash}
+$ source activate airflow-cerouno
+# En caso de AIRFLOW_HOME
+$ export AIRFLOW_HOME="$(pwd)"
+```
+
+Ejecutamos uno de los ejemplos:
+```{bash}
+$ airflow run example_bash_operator runme_0 2018-05-01
+```
+Y revisamos en la Web UI que ha funcionado: Browse -> Task Instances.
+
+
+#### Tips
 
 ## 2. Workflows
+
+
+### DAG File
+
+
+### Default Arguments
+
+```python
+import datetime as dt
+
+default_args = {
+    'owner': 'me',
+    'start_date': dt.datetime(2018, 5, 1),
+    'retries': 1,
+    'retry_delay': dt.timedelta(minutes=5),
+}
+```
+
+
+### Creación del DAG
+
+```python
+from airflow import DAG
+
+with DAG('airflow_tutorial_v01',
+         default_args=default_args,
+         schedule_interval='0 * * * *',
+         ) as dag:
+```
+
+
+### Creación de tareas
+
+
+```python
+    from airflow.operators.bash_operator import BashOperator
+    from airflow.operators.python_operator import PythonOperator
+
+    def print_world():
+        print('world')
+
+    print_hello = BashOperator(task_id='print_hello',
+                               bash_command='echo "hello"')
+    sleep = BashOperator(task_id='sleep',
+                         bash_command='sleep 5')
+    print_world = PythonOperator(task_id='print_world',
+                                 python_callable=print_world)
+```
+
+
+
+
+```python
+    from airflow.operators.bash_operator import BashOperator
+    from airflow.operators.python_operator import PythonOperator
+
+    def print_world():
+        print('world')
+
+    print_hello = BashOperator(task_id='print_hello',
+                               bash_command='echo "hello"')
+    sleep = BashOperator(task_id='sleep',
+                         bash_command='sleep 5')
+    print_world = PythonOperator(task_id='print_world',
+                                 python_callable=print_world)
+```
 ## 3. Ejercicios
 ## 4. Recursos
 * [Airflow documentation](https://airflow.apache.org/index.html)
