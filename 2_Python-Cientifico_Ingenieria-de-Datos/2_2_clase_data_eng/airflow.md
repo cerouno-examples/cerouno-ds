@@ -43,7 +43,7 @@ Para la clase de hoy, usaremos el ambiente virtual definido en el archivo `envir
 
 * Creando el ambiente virtual:
 ```bash
-$ conda env create -f environment.yml
+$ conda env create -f env.yml
 ```
 * Activación
 ```bash
