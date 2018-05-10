@@ -35,6 +35,20 @@ Hay distintos tipos de operadores:
 ![Airflow's General Architecture](https://cdn-images-1.medium.com/max/1000/1*czjWSmrjiRY1goA0emv7IA.png)
 
 ## 1. Setup
+
+### Instalación de Airflow
+La forma más sencilla de instalar la plataforma es usando  `pip`: `pip install apache-airflow`. Usando de forma separada un virtualenv para este framework.
+
+Para la clase de hoy, usaremos el ambiente virtual definido en el archivo `environment.yml` de Conda.
+
+```bash
+$ conda env create -f environment.yml
+```
+
+```bash
+$ source activate airflow-cerouno
+```
+
 ## 2. Workflows
 ## 3. Ejercicios
 ## 4. Recursos
