@@ -101,6 +101,13 @@ Y revisamos en la Web UI que ha funcionado: Browse -> Task Instances.
 
 #### Tips
 
+* Airflow soporta Python 2 y 3. Por ser el futuro del lennguaje, usa Python 3.
+
+* Más detalles sobre configuración  y seguridad pueden ser consultados en las secciones propias:  [Configuration](https://airflow.incubator.apache.org/configuration.html) y [Security](https://airflow.incubator.apache.org/security.html) de la documentación.
+* Airflow genera muchísimos logs, elige una ubicación adecuada (o cambia a una propia de tu SO)
+* Airflow asume que la hora de tu equipo es UTC, en producción es obligatorio que esté así.
+
+
 ## 2. Workflows
 
 Crearemos un worflow especificando accciones en forma de DAG en Python.
@@ -255,7 +262,6 @@ with DAG('airflow_cerouno_v01',
 print_hello >> sleep >> print_world
 ```
 
-
 ### Testing
 
 Revisamos que el DAGfile contiene código válido de Python:
@@ -294,6 +300,9 @@ Encendemos nuestro DAG y esperamos que el Scheduler propague los cambios para co
 
 * La ejecución continua de un DAG debe dar siempre el mismo resultado
 * Es preferible usar la notación propia de Cron para `schedule_interval` en vz de  `@daily` y `@hourly`
+* Administra las conexiones y secretos con connections and secrets with the [Connections](https://airflow.incubator.apache.org/configuration.html#connections) y/o [Variables](https://airflow.incubator.apache.org/ui.html#variable-view).
+
+
 ## 3. Ejercicios
 
 Ahora conocemos lo básico de Airflow, creación de DAGs y su puesta en marcha. Te toca:
@@ -302,7 +311,9 @@ Ahora conocemos lo básico de Airflow, creación de DAGs y su puesta en marcha. 
 * Usar un sensor para añadir un retraso de 5 minutos antes de iniciar las tareas
 * [Consultar la documentación de Templating](https://airflow.incubator.apache.org/tutorial.html#templating-with-jinja) e implementarlo con `BashOperator`. Mostrar en pantalla  `execution_date` en vez de `hello`
 * [Implementar templating](https://airflow.incubator.apache.org/code.html#airflow.operators.PythonOperator) para `PythonOperator`: Imprimir en pantalla `execution_date` en la función `print_world()`
+
 ## 4. Recursos
+
 * [Airflow documentation](https://airflow.apache.org/index.html)
 * [ETL best practices with Airflow](https://gtoonstra.github.io/etl-with-airflow/)
 * [Airflow: Tips, Tricks, and Pitfalls](https://medium.com/handy-tech/airflow-tips-tricks-and-pitfalls-9ba53fba14eb)
