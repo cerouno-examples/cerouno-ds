@@ -2,10 +2,12 @@
 
 ## Introducción a Docker
 
-<iframe src="//www.slideshare.net/slideshow/embed_code/key/b7J4ckRJtNCXhA" width="595" height="485" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="//www.slideshare.net/Docker/docker-birthday-3-intro-to-docker-slides" title="Docker Birthday #3 - Intro to Docker Slides" target="_blank">Docker Birthday #3 - Intro to Docker Slides</a> </strong> de <strong><a href="https://www.slideshare.net/Docker" target="_blank">Docker, Inc.</a></strong> </div>
 
-
-<iframe src="//www.slideshare.net/slideshow/embed_code/key/bKB1BkitzwwJd" width="595" height="485" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="//www.slideshare.net/Docker/docker-bday-5-sf-edition-introduction-to-docker" title="Docker Bday #5, SF Edition: Introduction to Docker" target="_blank">Docker Bday #5, SF Edition: Introduction to Docker</a> </strong> de <strong><a href="https://www.slideshare.net/Docker" target="_blank">Docker, Inc.</a></strong> </div>
+- [Docker Birthday #3 - Intro to Docker Slides
+](https://www.slideshare.net/Docker/docker-birthday-3-intro-to-docker-slides)
+- [Docker Bday #5, SF Edition: Introduction to Docker](https://www.slideshare.net/Docker/docker-bday-5-sf-edition-introduction-to-docker)
+- [Docker 101: Introduction to Docker
+](https://es.slideshare.net/Docker/docker-101-introduction-to-docker)
 
 ## Pasos para crear un ambiente:
 Construimos la imagen base:
@@ -47,16 +49,17 @@ Crear un DAG que realice lo siguiente:
 1. Convierta el tipo de dato de todas las columnas a float64
 1. Guarde el DataFrame resultante
 
-- Primero en Pandas
-- Luego Bash+Pandas
-    - Cambiar la descarga del archivo con un operador de Bash o HTTP en vez de Pandas
+Hacerlo primero en Pandas. Luego Bash+Pandas:
+
+- Cambiar la descarga del archivo con un operador de Bash o HTTP en vez de Pandas
 
 
 ### Quandl.
 
 Crear un DAG que descargue información de Quandl, y obtenga el promedio entre High & Low del día anterior.
-    - Crear una cuenta en Quandl y generar un Token de API
-    - Seleccionar cualquier símbolo de Stock en NASDAQ
-    - Descargar el DAG
-    - Procesar
-    - Desplegar en un Log el resultado del promedio y la fecha
+- Crear una cuenta en Quandl y generar un Token de API
+- Seleccionar cualquier símbolo de Stock en NASDAQ
+- Descargar el DAG
+- Procesar
+- Desplegar en un Log el resultado del promedio y la fecha
+- Programarlo para ejecutarse de lun-vie una hora después del cierre del mercado (16:00)
