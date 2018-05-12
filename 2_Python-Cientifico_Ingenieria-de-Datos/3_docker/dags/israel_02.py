@@ -27,11 +27,10 @@ with DAG('airflow_cerouno_v02',
                                bash_command='echo "hello"')
     # sleep = BashOperator(task_id='sleep',
     #                      bash_command='sleep 5')
+    sensor_dormilon = TimeSensor(task_id='sensor_dormilon',
+                                target_time=dt.time(5))
     print_world = PythonOperator(task_id='print_world',
                                  python_callable=print_world)
-
-    sensor_dormilon = TimeSensor(task_id='sensor_dormilon',
-                                target_time=dt.timedelta(minutes=5))
 
 
 print_hello >> sensor_dormilon >> print_world
