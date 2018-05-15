@@ -59,7 +59,7 @@ Hacerlo primero en Pandas. Luego Bash+Pandas:
 Crear un DAG que descargue información de Quandl, y obtenga el promedio entre High & Low del día anterior.
 - Crear una cuenta en Quandl y generar un Token de API
 - Seleccionar cualquier símbolo de Stock en NASDAQ
-- Descargar el DAG
+- Consultar la API con una query
 - Procesar
 - Desplegar en un Log el resultado del promedio y la fecha
 - Programarlo para ejecutarse de lun-vie una hora después del cierre del mercado (16:00)
