@@ -1,11 +1,9 @@
 - Iniciar Docker
 - Iniciar la consola de comandos, y situarse en la ubicación donde descargaron el repositorio de la clase
-- 
+- Ejecutar el siguiente comando: 
 
 
-
-##
-
+```bash
 docker run -d -e GRANT_SUDO=yes \
    --user root \
    -p 4040:4040 \
@@ -16,3 +14,4 @@ docker run -d -e GRANT_SUDO=yes \
    -p 18080:18080 \
    -v $PWD:/home/jovyan/work \
    jupyter/pyspark-notebook start-notebook.sh
+```
