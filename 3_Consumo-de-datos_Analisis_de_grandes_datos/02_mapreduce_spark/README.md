@@ -1,6 +1,6 @@
 - Iniciar Docker
 - Iniciar la consola de comandos, y situarse en la ubicación donde descargaron el repositorio de la clase
-- Ejecutar el siguiente comando: 
+- Ejecutar el siguiente comando:
 
 
 ```bash
@@ -15,3 +15,5 @@ docker run -d -e GRANT_SUDO=yes \
    -v $PWD:/home/jovyan/work \
    jupyter/pyspark-notebook start-notebook.sh
 ```
+
+En nuestro navegador ir a la dirección http://localhost:8888. Veremos una instancia de Jupyter Notebook corriendo.
