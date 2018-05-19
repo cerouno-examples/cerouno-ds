@@ -112,21 +112,21 @@ def sendData(c_socket):
 
 
 if __name__ == "__main__":
-# Crear un objeto socket
-# Configurar el nombre de nuestro equipo/host
-# Reservar ante el SO el puerto para el servicio
-# Enlazar al puerto
+s = socket.socket() # Crear un objeto socket
+host = "127.0.0.1"# Configurar el nombre de nuestro equipo/host
+port = 5555 # Reservar ante el SO el puerto para el servicio
+s.bind((host, port)) # Enlazar al puerto
 
-# Imprimir en que puerto estamos escuchando
+print("Listening on port: %s" % str(port)) # Imprimir en que puerto estamos escuchando
 
-# Esperar por una conexión de cliente
-# Establecer una conexión con el cliente
+s.listen(5) # Esperar por una conexión de cliente
+c, addr = s.accept() # Establecer una conexión con el cliente
 
 
 # Imprimir la dirección del cliente que nos hizo una petición de conexión
 # Pista: Está información se obtiene al establecer la conexión
-
-# Mediante la función sendData y enviar paquetes al cliente
+print( "Received request from: " + str( addr ) )
+sendData( c ) # Mediante la función sendData y enviar paquetes al cliente
 
 ```
 
