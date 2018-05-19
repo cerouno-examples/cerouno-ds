@@ -2,7 +2,7 @@
 ## Python
 Desde Anaconda, crear un nuevo virtualenv usando el archivo YAML de este repo. O manualmente con los paquetes:
 - Python=3
-- upyter
+- Jupyter
 - Pandas
 - Requests
 - Scrapy
