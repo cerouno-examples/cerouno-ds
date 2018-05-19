@@ -1,7 +1,18 @@
 # Big Data: Ejercicio con Spark Streaming.
 19/mayo/2018
+----
+### Recordando la Arquitectura Lambda
 
+![Lambda Architecture](http://lambda-architecture.net/img/la-overview_small.png)
+1. All data entering the system is dispatched to both the batch layer and the speed layer for processing.
 
+1. The batch layer has two functions: (i) managing the master dataset (an immutable, append-only set of raw data), and (ii) to pre-compute the batch views.
+
+1. The serving layer indexes the batch views so that they can be queried in low-latency, ad-hoc way.
+
+1. The speed layer compensates for the high latency of updates to the serving layer and deals with recent data only.
+Any incoming query can be answered by merging results from batch views and real-time views.
+----
 ## Indicaciones para la primera parte
 
 ### Iniciar Docker
