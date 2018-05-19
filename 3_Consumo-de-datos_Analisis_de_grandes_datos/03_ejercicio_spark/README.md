@@ -127,6 +127,11 @@ if __name__ == "__main__":
 
 ### Abrir el notebook `Twitter_Trends_Ejercicio.ipynb` y completar el ejercicio
 
+
+### Resultado esperado:
+
+![Seaborn plot](plot_sns.png)
+
 ### Posible bug:
 
 ```python
@@ -154,8 +159,9 @@ Py4JJavaError: An error occurred while calling o26.sql.
 ```
 
 Solución:
+
 - Usar un hashtag más activo en el script de lectura
-- Detener el contexto de spark y ejecutar de nuevo el script y NB.
-- Esperar a que el proceso obtenga más de 10 registros.
+- Detener el contexto de spark y ejecutar de nuevo el script y NB. Espera 20-30 segundos (o según tu ventana de streaming) después de reiniciar el script e instanciar la conexión.
+- Verifica que el proceso obtenga más de 10 registros en la terminal de `read.py`.
 
 ### Fin!
