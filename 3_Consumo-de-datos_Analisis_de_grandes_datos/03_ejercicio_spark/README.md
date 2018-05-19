@@ -16,7 +16,8 @@ Primero, nos situamos en el directorio donde tengamos nuestro código para hoy.
 ```bash
 docker run -e GRANT_SUDO=yes --user root -p 8888:8888 -p 4040:4040 -v $PWD:/home/jovyan/work jupyter/pyspark-notebook start-notebook.sh
 ```
-Problemas con Windows: * https://medium.com/@neil.avery_68603/running-docker-from-windows-cmd-prompt-6540daebedad#.lae8p2oiz
+Problemas con Windows:
+* https://medium.com/@neil.avery_68603/running-docker-from-windows-cmd-prompt-6540daebedad#.lae8p2oiz
 * ??
 
 Abrimos con nuestro navegador la URL que nos menciona la consola.
@@ -95,8 +96,11 @@ def sendData(c_socket):
   # Sustituir la cadena '####' por cualquier otra palabra
   twitter_stream.filter(track=['####'])
 
+# Podemos modificar sendData para pruebas e imprimir en pantalla los datos obtenidos de twitter
+
+
+
 if __name__ == "__main__":
-           # Create a socket object
 # Crear un objeto socket
 # Configurar el nombre de nuestro equipo/host
 # Reservar ante el SO el puerto para el servicio
@@ -108,11 +112,11 @@ if __name__ == "__main__":
 # Establecer una conexión con el cliente
 
 
-#
+# Imprimir la dirección del cliente que nos hizo una petición de conexión
+# Pista: Está información se obtiene al establecer la conexión
 
-  print( "Received request from: " + str( addr ) )
+# Mediante la función sendData y enviar paquetes al cliente
 
-  sendData( c )
 ```
 
 ### Cuando sea requerido, ejecutar *read.py*
@@ -120,3 +124,38 @@ if __name__ == "__main__":
 ```bash
 /opt/conda/bin/python read.py
 ```
+
+### Abrir el notebook `Twitter_Trends_Ejercicio.ipynb` y completar el ejercicio
+
+### Posible bug:
+
+```python
+---------------------------------------------------------------------------
+Py4JJavaError                             Traceback (most recent call last)
+/usr/local/spark/python/pyspark/sql/utils.py in deco(*a, **kw)
+     62         try:
+---> 63             return f(*a, **kw)
+     64         except py4j.protocol.Py4JJavaError as e:
+
+/usr/local/spark/python/lib/py4j-0.10.6-src.zip/py4j/protocol.py in get_return_value(answer, gateway_client, target_id, name)
+    319                     "An error occurred while calling {0}{1}{2}.\n".
+--> 320                     format(target_id, ".", name), value)
+    321             else:
+```
+```java
+Py4JJavaError: An error occurred while calling o26.sql.
+: org.apache.spark.sql.AnalysisException: Table or view not found: tweets; line 1 pos 23
+	at org.apache.spark.sql.catalyst.analysis.package$AnalysisErrorAt.failAnalysis(package.scala:42)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer$ResolveRelations$.org$apache$spark$sql$catalyst$analysis$Analyzer$ResolveRelations$$lookupTableFromCatalog(Analyzer.scala:663)
+
+
+    AnalysisException: 'Table or view not found: tweets; line 1 pos 23'
+
+```
+
+Solución:
+- Usar un hashtag más activo en el script de lectura
+- Detener el contexto de spark y ejecutar de nuevo el script y NB.
+- Esperar a que el proceso obtenga más de 10 registros.
+
+### Fin!
