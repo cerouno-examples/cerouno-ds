@@ -1,0 +1,13 @@
+#OS
+.DS_Store
+
+#env
+env/
+
+#Python
+*.pyc
+
+#IPython
+.ipynb_checkpoints/
+
+*.html
