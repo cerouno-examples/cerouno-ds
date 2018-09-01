@@ -10,12 +10,19 @@
 ](https://es.slideshare.net/Docker/docker-101-introduction-to-docker)
 
 ## Pasos para crear un ambiente:
+
+### Opción 1:
+Obtener la imagen base de DockerHub
+```bash
+docker pull puckel/docker-airflow
+```
+
+### Opción 2:
 Construimos la imagen base:
 
 ```bash
 docker build --rm -t puckel/docker-airflow .
 ```
-
 Si tenemos más de 4GB de RAM y un procesador arriba de Core i5 o equivalente:
 
 ```bash
