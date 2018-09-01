@@ -10,11 +10,20 @@
 ](https://es.slideshare.net/Docker/docker-101-introduction-to-docker)
 
 ## Pasos para crear un ambiente:
+
+### Opción 1:
+Obtener la imagen base de DockerHub
+```bash
+docker pull puckel/docker-airflow
+```
+
+### Opción 2:
 Construimos la imagen base:
 
 ```bash
 docker build --rm -t puckel/docker-airflow .
 ```
+
 
 Si tenemos más de 4GB de RAM y un procesador arriba de Core i5 o equivalente:
 
@@ -32,6 +41,14 @@ O aún más compacto:
 ```bash
 docker run -d -p 8080:8080 puckel/docker-airflow
 ```
+
+
+
+### Extras:
+- Cargar ejemplos es mediante la variable de ambiente `LOAD_EX=n` al momento de crear la infraestructura
+
+    docker run -d -p 8080:8080 -e LOAD_EX=y puckel/docker-airflow
+
 
 ## Ejercicios:
 - Iniciar un ambiente de Airflow con Docker
@@ -52,6 +69,25 @@ Crear un DAG que realice lo siguiente:
 Hacerlo primero en Pandas. Luego Bash+Pandas:
 
 - Cambiar la descarga del archivo con un operador de Bash o HTTP en vez de Pandas
+
+### HackerNews
+
+Crear un DAG que consulte la API de HN https://news.ycombinator.com/ cada media hora, obtenga las 500 nuevas noticias para representarlas en una nueva API.
+
+Documentación de acceso a la API: https://github.com/HackerNews/API
+
+- Consultar la API con una query
+- Procesar
+- Obtener los títulos y la liga a la discusión en HN
+- Presentar los resultados en una API nueva (flask_restful)
+
+Bonus points:
+
+- Usando NLP, analizar con la técnica análisis de sentimiento (sentiment-analysis)
+- Representar el título de la noticia con su score de sentimiento
+
+Extra points:
+- Sumarizar las noticias por sentimiento
 
 
 ### Quandl.
