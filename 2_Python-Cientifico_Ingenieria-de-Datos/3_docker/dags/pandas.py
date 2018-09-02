@@ -33,7 +33,7 @@ def cast():
 
 default_args = {
     'owner': 'Israel Z',
-    'start_date': dt.datetime(2018, 5, 9),
+    'start_date': dt.datetime(2018, 9, 1),
     'retries': 1,
     'retry_delay': dt.timedelta(minutes=5),
 }

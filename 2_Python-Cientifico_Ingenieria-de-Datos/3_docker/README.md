@@ -77,8 +77,7 @@ Crear un DAG que consulte la API de HN https://news.ycombinator.com/ cada media 
 Documentación de acceso a la API: https://github.com/HackerNews/API
 
 - Consultar la API con una query
-- Procesar
-- Obtener los títulos y la liga a la discusión en HN
+- Procesar y obtener los títulos y la liga a la discusión en HN
 - Presentar los resultados en una API nueva (flask_restful)
 
 Bonus points:
