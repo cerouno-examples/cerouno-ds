@@ -1,5 +1,5 @@
 # Big Data: Ejercicio con Spark Streaming.
-19/mayo/2018
+
 ----
 ### Recordando la Arquitectura Lambda
 
