@@ -16,4 +16,4 @@ docker run -d -e GRANT_SUDO=yes \
    jupyter/pyspark-notebook start-notebook.sh
 ```
 
-En nuestro navegador ir a la dirección http://localhost:8888. Veremos una instancia de Jupyter Notebook corriendo.
+En nuestro navegador ir a la dirección http://localhost:8888. Veremos una instancia de Jupyter Notebook corriendo. En caso de usar un equipo proveído por el instructor, esperar a la asignación de dirección IP, red, y nomenlcatura para tus archivos de trabajo.
