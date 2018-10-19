@@ -7,10 +7,10 @@ import json
 
 # Crear nueva app aqui: https://apps.twitter.com/
 
-consumer_key = ''
-consumer_secret = ''
-access_token = ''
-access_secret = ''
+consumer_key = '8DLh4eGaKzgOrttDufCYEvLb1'
+consumer_secret = 'PagdKhpwp2ehmYgU26L3rJ2wc3BRrddumeyHqkcUGwq86JH6pf'
+access_token = '8845752-CZjzRx73oOuX78wDZqUlxlEHankMRq3NyWMn6I8hCM'
+access_secret = 'sR2b1b9LT2ZWzUACZ2nCKkHtbDsDRl7ITmaFcYUOS8b6T'
 
 class TweetsListener(StreamListener):
 
@@ -37,12 +37,12 @@ def sendData(c_socket):
 
   twitter_stream = Stream(auth, TweetsListener(c_socket))
 
-  twitter_stream.filter(track=['#PasitoPerron'])
+  twitter_stream.filter(track=['#ClimbLikeAGirl'])
 
 if __name__ == "__main__":
   s = socket.socket()         # Create a socket object
   host = "127.0.0.1"      # Get local machine name
-  port = 5555                 # Reserve a port for your service
+  port = 2704                 # Reserve a port for your service
   s.bind((host, port))        # Bind to the port
 
   print("Listening on port: %s" % str(port))
